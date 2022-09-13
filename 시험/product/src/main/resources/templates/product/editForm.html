@@ -30,6 +30,7 @@
 <form action="" method="post" th:object="${form}">
   <ul th:if="${#fields.hasErrors('count')}" th:class="errmsg">
     <li th:each="err: ${#fields.errors('count')}" th:text="${err}"></li>
+    <li><p class="errmsg" th:each="err:${#fields.globalErrors()}" th:text="${err}"></p></li>
   </ul>
   <div>
     <div><label for="">상품ID</label><input type="text" th:field="*{pid}" readonly></div>
