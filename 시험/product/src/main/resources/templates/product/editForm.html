@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>상품수정</title>
+  <style>
+  button{
+    background-color: #f1c40f;
+    margin-top: 10px;
+  }
+    .errmsg {
+        fonst-size: 0.8em;
+        font-weight: bold;
+        color:red;
+    }
+    ul {
+        margin:0; padding: 0;
+    }
+    ul, li {
+        text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+<h3>상품 수정</h3>
+<hr>
+<form action="" method="post" th:object="${form}">
+  <ul th:if="${#fields.hasErrors('count')}" th:class="errmsg">
+    <li th:each="err: ${#fields.errors('count')}" th:text="${err}"></li>
+    <li th:each="err: ${#fields.errors('price')}" th:text="${err}"></li>
+  </ul>
+  <div>
+    <div><label for="">상품ID</label><input type="text" th:field="*{pid}" readonly></div>
+    <div><label for="">상품명</label><input type="text" th:field="*{pname}"></div>
+    <div><label for="">수량</label><input type="text" th:field="*{count}"></div>
+    <div><label for="">가격</label><input type="text" th:field="*{price}"></div>
+  </div>
+  <div>
+    <button type="button" id="cancelBtn">취소</button>
+    <button type="submit">수정</button>
+  </div>
+
+  <script th:inline="javascript">
+      cancelBtn.addEventListener('click', e=>{
+        location.href = [[@{/product}]];
+      });
+  </script>
+</form>
+
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>상품 목록</title>
+  <style>
+    button{
+      background-color: #f1c40f;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+<h3>상품 목록</h3>
+<hr>
+<table>
+  <thead>
+    <tr>
+      <th>아이디</th>
+      <th>상품명</th>
+      <th>수량</th>
+      <th>가격</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr th:each="rec:${list}" th:data-product-id="${rec.pid}">
+      <td>[[${rec.pid}]]</td>
+      <td>[[${rec.pname}]]</td>
+      <td>[[${rec.count}]]</td>
+      <td>[[${rec.price}]]</td>
+    </tr>
+  </tbody>
+</table>
+<div><button id="addBtn">등록하기</button></div>
+
+<script th:inline="javascript">
+  const $tbody = document.querySelector("table tbody");
+  $tbody.addEventListener('click', e=>{
+    if(e.target.tagName =='TD'){
+      const pid = e.target.parentElement.dataset.productId;
+      location.href=`/product/${pid}`;
+    }
+  });
+  addBtn.addEventListener('click',e=>{
+    location.href=`/product/add`;
+  });
+
+</script>
+</body>
+</html>
