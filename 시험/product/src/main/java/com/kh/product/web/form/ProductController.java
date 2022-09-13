@@ -133,7 +133,7 @@ public class ProductController {
     }
 
     if (editForm.getCount()* editForm.getPrice()>10000000) {
-      bindingResult.rejectValue("count", "totalChk", new String[]{"0", "1000만원"}, "총액이 1000만원을 초과할 수 없음");
+      bindingResult.reject( "totalChk", new String[]{"0", "1000만원"}, "총액이 1000만원을 초과할 수 없음");
       log.info("totalerrors={}", editForm.getCount()* editForm.getPrice());
       return "product/editForm";
     }
