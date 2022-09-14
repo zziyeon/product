@@ -19,7 +19,7 @@ public class ProductDAOImplTest {
   @Order(1)
   @DisplayName("상품등록")
   void save() {
-    Product newProduct = new Product(null, "돼지바", 8, 8800l);
+    Product newProduct = new Product("m07", "돼지바", 8, 8800l);
     testProduct = productDAO.save(newProduct);
     Assertions.assertThat(testProduct.getPname()).isEqualTo(newProduct.getPname());
     Assertions.assertThat(testProduct.getCount()).isEqualTo(newProduct.getCount());
@@ -41,7 +41,7 @@ public class ProductDAOImplTest {
   @DisplayName("상품수정")
   void update() {
     log.info("update() called");
-    Long pid= testProduct.getPid();
+    String pid= testProduct.getPid();
     Product product = new Product(pid, "치즈", 7, 700000l);
     productDAO.update(pid, product);
 

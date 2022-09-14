@@ -13,16 +13,16 @@ import java.util.List;
 public class ProductSVCImpl implements ProductSVC {
   private final ProductDAO productDAO;
 
-  //상품id생성
-  @Override
-  public Long generatedPid() {
-    return productDAO.generatedPid();
-  }
+//  //상품id생성
+//  @Override
+//  public String generatedPid() {
+//    return productDAO.generatedPid();
+//  }
 
   //상품 등록
   @Override
   public Product save(Product product) {
-    Long generatePid = productDAO.generatedPid();
+    String generatePid = productDAO.generatedPid();
     product.setPid((generatePid));
     productDAO.save(product);
 
@@ -30,17 +30,17 @@ public class ProductSVCImpl implements ProductSVC {
   }
 
   @Override
-  public Product findById(Long pid) {
+  public Product findById(String pid) {
     return productDAO.findById(pid);
   }
 
   @Override
-  public int update(Long pid, Product product) {
+  public int update(String pid, Product product) {
     return productDAO.update(pid, product);
   }
 
   @Override
-  public int delete(Long pid) {
+  public int delete(String pid) {
     return productDAO.delete(pid);
   }
 

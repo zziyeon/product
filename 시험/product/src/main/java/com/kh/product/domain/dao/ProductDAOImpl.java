@@ -23,9 +23,9 @@ public class ProductDAOImpl implements ProductDAO{
   private final JdbcTemplate jt;
 
   //상품번호 등록
-  public Long generatedPid(){
-    String sql = "select product_pid_seq.nextval from dual";
-    Long pid = jt.queryForObject(sql, Long.class);
+  public String generatedPid(){
+    String sql = "select 'm-' || product_pid_seq.nextval from dual";
+    String pid = jt.queryForObject(sql, String.class);
     return pid;
   }
 
@@ -42,7 +42,7 @@ public class ProductDAOImpl implements ProductDAO{
       @Override
       public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
         PreparedStatement pstmt = con.prepareStatement(sql, new String[]{"pid"});
-        pstmt.setLong(1, product.getPid());
+        pstmt.setString(1, product.getPid());
         pstmt.setString(2, product.getPname());
         pstmt.setInt(3, product.getCount());
         pstmt.setLong(4, product.getPrice());
@@ -50,14 +50,14 @@ public class ProductDAOImpl implements ProductDAO{
       }
     }, keyHolder);
 
-    Long pid = Long.valueOf(keyHolder.getKeys().get("pid").toString());
+    String pid = String.valueOf(keyHolder.getKeys().get("pid").toString());
 
     product.setPid(pid);
     return product;
   }
   //조회
   @Override
-  public Product findById(Long pid) {
+  public Product findById(String pid) {
     StringBuffer sql = new StringBuffer();
     sql.append("select pid, pname, count, price ");
     sql.append("from product ");
@@ -74,7 +74,7 @@ public class ProductDAOImpl implements ProductDAO{
   }
   //수정
   @Override
-  public int update(Long pid, Product product) {
+  public int update(String pid, Product product) {
     StringBuffer sql = new StringBuffer();
 
     sql.append("update product ");
@@ -85,7 +85,7 @@ public class ProductDAOImpl implements ProductDAO{
   }
   //삭제
   @Override
-  public int delete(Long pid) {
+  public int delete(String pid) {
     String sql = "delete from product where pid = ? ";
 
     return jt.update(sql, pid);

@@ -64,14 +64,14 @@ public class ProductController {
 
     Product savedProduct = productSVC.save(product);
 
-    Long id = savedProduct.getPid();
+    String id = savedProduct.getPid();
     redirectAttributes.addAttribute("id", id);
     return "redirect:/product/{id}";
   }
 
   //상품 개별 조회
   @GetMapping("/{id}")
-  public String findById(@PathVariable("id") Long id, Model model) {
+  public String findById(@PathVariable("id") String id, Model model) {
     Product findedProduct = productSVC.findById(id);
 
     EachInfoForm eachInfoForm = new EachInfoForm();
@@ -87,7 +87,7 @@ public class ProductController {
 
   //수정화면
   @GetMapping("/{id}/edit")
-  public String editForm(@PathVariable("id") Long id, Model model) {
+  public String editForm(@PathVariable("id") String id, Model model) {
     Product findedProduct = productSVC.findById(id);
 
     EditForm editForm = new EditForm();
@@ -103,7 +103,7 @@ public class ProductController {
 
   //수정처리
   @PostMapping("/{id}/edit")
-  public String edit(@PathVariable("id") Long id, @Valid @ModelAttribute("form") EditForm editForm, BindingResult bindingResult) {
+  public String edit(@PathVariable("id") String id, @Valid @ModelAttribute("form") EditForm editForm, BindingResult bindingResult) {
     if (editForm.getCount() > 100) {
       bindingResult.rejectValue("count", "countChk1", new String[]{"100"}, "상품수량은 100개를 초과할 수 없습니다.");
       return "product/addForm";
@@ -132,7 +132,7 @@ public class ProductController {
   }
   //삭제처리
   @GetMapping("/{id}/del")
-  public String delete(@PathVariable("id") Long id){
+  public String delete(@PathVariable("id") String id){
     int deletedRow = productSVC.delete(id);
     if (deletedRow == 0) {
       return "redirect:/product/" + id;
