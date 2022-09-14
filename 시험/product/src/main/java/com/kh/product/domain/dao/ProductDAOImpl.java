@@ -45,7 +45,7 @@ public class ProductDAOImpl implements ProductDAO{
         pstmt.setLong(1, product.getPid());
         pstmt.setString(2, product.getPname());
         pstmt.setInt(3, product.getCount());
-        pstmt.setInt(4, product.getPrice());
+        pstmt.setLong(4, product.getPrice());
         return pstmt;
       }
     }, keyHolder);

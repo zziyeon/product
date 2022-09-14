@@ -42,37 +42,18 @@ public class ProductController {
       return "product/addForm";
     }
 
-    if (saveForm.getCount().intValue() > 100) {
+    if (saveForm.getCount() > 100) {
       bindingResult.rejectValue("count", "countChk1", new String[]{"100"}, "상품수량은 100개를 초과할 수 없습니다.");
       return "product/addForm";
     }
-    if (saveForm.getCount().intValue() <= 0 || saveForm.getPrice().intValue()<=0 ) {
+    if (saveForm.getCount() <= 0 || saveForm.getPrice()<=0 ) {
       bindingResult.rejectValue("count", "chk", "상품수량, 가격은 0, 음수를 입력 불가");
       return "product/addForm";
     }
 
-    if (saveForm.getCount()* saveForm.getPrice()>10000000) {
-      bindingResult.rejectValue("count", "totalChk", new String[]{"0", "1000만원"}, "총액이 1000만원을 초과할 수 없음");
+    if ((saveForm.getCount() * saveForm.getPrice())>10000000) {
+      bindingResult.reject("totalChk", new String[]{"0", "1000만원"}, "총액이 1000만원을 초과할 수 없음");
       log.info("totalerrors={}", saveForm.getCount()* saveForm.getPrice());
-      return "product/addForm";
-    }
-
-    Product product = new Product();
-    product.setPname(saveForm.getPname());
-    product.setCount(saveForm.getCount());
-    product.setPrice(saveForm.getPrice());
-
-    Product savedProduct = productSVC.save(product);
-
-    Long id = savedProduct.getPid();
-    redirectAttributes.addAttribute("id", id);
-    return "redirect:/product/{id}";
-  }
-
-  public String add2(@Valid @ModelAttribute("form") SaveForm saveForm, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
-    //검증
-    if(bindingResult.hasErrors()){
-      log.info("errors={}", bindingResult);
       return "product/addForm";
     }
 
@@ -123,19 +104,19 @@ public class ProductController {
   //수정처리
   @PostMapping("/{id}/edit")
   public String edit(@PathVariable("id") Long id, @Valid @ModelAttribute("form") EditForm editForm, BindingResult bindingResult) {
-    if (editForm.getCount().intValue() > 100) {
+    if (editForm.getCount() > 100) {
       bindingResult.rejectValue("count", "countChk1", new String[]{"100"}, "상품수량은 100개를 초과할 수 없습니다.");
-      return "product/editForm";
+      return "product/addForm";
     }
-    if (editForm.getCount().intValue() <= 0 || editForm.getPrice().intValue()<=0 ) {
+    if (editForm.getCount() <= 0 || editForm.getPrice()<=0 ) {
       bindingResult.rejectValue("count", "chk", "상품수량, 가격은 0, 음수를 입력 불가");
-      return "product/editForm";
+      return "product/addForm";
     }
 
-    if (editForm.getCount()* editForm.getPrice()>10000000) {
-      bindingResult.reject( "totalChk", new String[]{"0", "1000만원"}, "총액이 1000만원을 초과할 수 없음");
+    if ((editForm.getCount() * editForm.getPrice())>10000000) {
+      bindingResult.reject("totalChk", new String[]{"0", "1000만원"}, "총액이 1000만원을 초과할 수 없음");
       log.info("totalerrors={}", editForm.getCount()* editForm.getPrice());
-      return "product/editForm";
+      return "product/addForm";
     }
 
     Product product = new Product();

@@ -28,9 +28,11 @@
 <h3>상품 수정</h3>
 <hr>
 <form action="" method="post" th:object="${form}">
+  <div th:if="${#fields.hasGlobalErrors()}">
+    <p class="errmsg" th:each="err:${#fields.globalErrors()}" th:text="${err}"></p>
+  </div>
   <ul th:if="${#fields.hasErrors('count')}" th:class="errmsg">
     <li th:each="err: ${#fields.errors('count')}" th:text="${err}"></li>
-    <li><p class="errmsg" th:each="err:${#fields.globalErrors()}" th:text="${err}"></p></li>
   </ul>
   <div>
     <div><label for="">상품ID</label><input type="text" th:field="*{pid}" readonly></div>

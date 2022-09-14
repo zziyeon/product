@@ -28,16 +28,14 @@
   <h3>상품 등록</h3>
   <hr>
   <form action="" method="post" th:object="${form}">
+    <div th:if="${#fields.hasGlobalErrors()}">
+      <p class="errmsg" th:each="err:${#fields.globalErrors()}" th:text="${err}"></p>
+    </div>
     <ul th:if="${#fields.hasErrors('count')}" th:class="errmsg">
       <li th:each="err: ${#fields.errors('count')}" th:text="${err}"></li>
-      <li><p class="errmsg" th:each="err:${#fields.globalErrors()}" th:text="${err}"></p></li>
     </ul>
     <div>
-      <div><label for="">상품명</label><input type="text" th:field="*{pname}">
-        <ul th:if="${#fields.hasErrors('pname')}" th:class="errmsg">
-          <li th:each="err: ${#fields.errors('pname')}" th:text="${err}"></li>
-        </ul>
-      </div>
+      <div><label for="">상품명</label><input type="text" th:field="*{pname}"></div>
       <div><label for="">수량</label><input type="text" th:field="*{count}"></div>
       <div><label for="">가격</label><input type="text" th:field="*{price}"><div>
       <button type="button" id="cancelBtn">취소</button>
