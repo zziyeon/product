@@ -24,7 +24,7 @@ import java.util.Optional;
 public class ApiProductControllerV3 {
   private final ProductSVC productSVC;
   //  등록	POST	/api/products
-  @ResponseBody
+  //  @ResponseBody
   //client 요청과는 상관 없이 sercer에서 json으로 고정
   @PostMapping(value = "/products", produces = "application/json")
   public ApiResponse<Object> add(@Valid @RequestBody AddReq addReq, BindingResult bindingResult) {
@@ -72,7 +72,6 @@ public class ApiProductControllerV3 {
   }
 
   //  조회	GET	/api/products/{id}
-  @ResponseBody
   @GetMapping("/products/{id}")
   public ApiResponse<Product> findById(@PathVariable("id") Long id) {
     //상품 조회
@@ -87,7 +86,6 @@ public class ApiProductControllerV3 {
     return response;
   }
 //  수정	PATCH	/api/products/{id}
-  @ResponseBody
   @PatchMapping("/products/{id}")
   public ApiResponse<Object> edit(@PathVariable("id") Long id, @Valid @RequestBody EditReq editReq, BindingResult bindingResult) {
 
@@ -127,7 +125,6 @@ public class ApiProductControllerV3 {
   }
 
 //  삭제	DELETE	/api/products/{id}
-  @ResponseBody
   @DeleteMapping("/products/{id}")
   public ApiResponse<Product> del(@PathVariable("id") Long id) {
     //검증
@@ -139,11 +136,10 @@ public class ApiProductControllerV3 {
     productSVC.deleteByProductId(id);
 
     //응답 메시지
-    return ApiResponse.createApiREsMsg("00", "성공", productSVC.findByProductId(id).get());
+    return ApiResponse.createApiREsMsg("00", "성공", null);
   }
 
 //  목록	GET	/api/products
-  @ResponseBody
   @GetMapping("/products")
   public ApiResponse<List<Product>> findAll() {
     List<Product> list = productSVC.findAll();
