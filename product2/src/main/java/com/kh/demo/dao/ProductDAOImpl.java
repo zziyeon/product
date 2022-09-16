@@ -1,5 +1,6 @@
 package com.kh.demo.dao;
 
+import com.kh.demo.Product;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -10,7 +11,6 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import javax.swing.text.html.Option;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -70,7 +70,6 @@ public class ProductDAOImpl implements ProductDAO{
     sql.append(" where product_id = ? ");
 
     try {
-
       Product product = jt.queryForObject(
           sql.toString(),
           new BeanPropertyRowMapper<>(Product.class),

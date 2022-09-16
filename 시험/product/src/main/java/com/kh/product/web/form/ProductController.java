@@ -66,6 +66,7 @@ public class ProductController {
 
     Long id = savedProduct.getPid();
     redirectAttributes.addAttribute("id", id);
+
     return "redirect:/product/{id}";
   }
 

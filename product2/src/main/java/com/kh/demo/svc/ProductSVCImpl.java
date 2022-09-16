@@ -1,6 +1,6 @@
 package com.kh.demo.svc;
 
-import com.kh.demo.dao.Product;
+import com.kh.demo.Product;
 import com.kh.demo.dao.ProductDAO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
