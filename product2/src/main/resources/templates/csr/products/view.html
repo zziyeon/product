@@ -12,12 +12,16 @@
       font-weight:bold;
       font-size: 0.8em;
     }
+    #productList .wrap .head,
     #productList .wrap .body{
       display:grid;
-      grid-template-columns: 50px 100px 100px 100px;
-      grid-auto-rows: 30px;
+      grid-template-columns: 50px 100px 50px 100px;
+      grid-auto-rows: 2em;
     }
-
+    #productList .wrap .head{
+      font-weight:bold;
+      font-size:1em;
+    }
   </style>
 </head>
 <body>
@@ -26,6 +30,12 @@
 <div>
   <form action="">
     <div><span class="fieldError" id="globalErr"></span></div>
+    <div>
+      <label for="productId">상품아이디</label>
+      <input type="text" id="productId" size="10">
+      <button type="button" id="findBtn">조회</button>
+      <span id="productIdErr"></span>
+    </div>
     <div>
       <label for="pname">상품명</label>
       <input type="text" id="pname">
@@ -80,106 +90,82 @@
     </div>
 
     <script>
-  //상품등록
-  //fetch(resource)
-  //fetch(resource, options)
-
-  const product = {
-    'pname': '자전거',
-    'quantity' : '16',
-    'price' : '130000'
-  };
-
-  quantity.addEventListener('keyup', e=>{
-    if(isNaN(quantity.value) || quantity.value <= 0){        //수량, 단가는 숫자
-      quantityErr.textContent = '숫자를 입력하세요';
-      if(!quantityErr.classList.contains('fieldError')){
-        quantityErr.classList.add('fieldError');
+      //전역변수
+      const form = {
+        productId:document.getElementById('productId'),
+        pname:document.getElementById('pname'),
+        quantity:document.getElementById('quantity'),
+        price:document.getElementById('price')
       }
-    }else if(quantity.value > 100){
-      quantityErr.textContent = '수량은 100개 초과 안돼';
-      if(!quantityErr.classList.contains('fieldError')){
-        quantityErr.classList.add('fieldError');
+
+    //전체 목록 가져오기
+    findAll();
+
+    //입력데이터 가져오기
+    function getInputData() {
+      const pname= form.pname.value;
+      const quantity= form.quantity.value;
+      const price=form.price.value;
+
+      //변수이름을 property key, 변수값을 property value
+      return { pname, quantity, price};
+    };
+
+    //
+    pname.addEventListener('focus', e=>{
+      form.productId.value='';
+<!--      productIdErr.classList.add('fieldError');-->
+      productIdErr.classList.remove('fieldError');
+    });
+
+    //수량 검증
+    quantity.addEventListener('keyup', e=>{
+      if(isNaN(quantity.value) || quantity.value <= 0){        //수량, 단가는 숫자
+        quantityErr.textContent = '양수를 입력하세요';
+        if(!quantityErr.classList.contains('fieldError')){
+          quantityErr.classList.add('fieldError');
+        }
+      }else if(quantity.value > 100){
+        quantityErr.textContent = '수량은 100개 초과 안돼';
+        if(!quantityErr.classList.contains('fieldError')){
+          quantityErr.classList.add('fieldError');
+        }
+      }else{
+        quantityErr.textContent= null;
+        quantityErr.classList.remove('fieldError');
       }
-    }else {
-      quantityErr.textContent= null;
-      quantityErr.classList.remove('fieldError');
-    }
-  });
+    });
+    //가격 검증
+    price.addEventListener('keyup', e=>{
+      if(isNaN(price.value) || price.value <= 0){        //수량, 단가는 숫자
+        priceErr.textContent = '양수를 입력하세요';
+        if(!priceErr.classList.contains('fieldError')){
+          priceErr.classList.add('fieldError');
+        }
+      }else {
+        priceErr.textContent= null;
+        priceErr.classList.remove('fieldError');
+      }
+    });
 
   //등록 클릭시
   addBtn.addEventListener('click', e=>{
-    //데이터 검증(유효성 체크)
-    if(!pname.value.trim()){
-      pnameErr.textContent = '필수 필드입니다.';
-      if(!pnameErr.classList.contains('fieldError')){
-        pnameErr.classList.add('fieldError');
-      }
-    } else {
-      pnameErr.textContent= null;
-      pnameErr.classList.remove('fieldError');
-    }
-    //수량
-    if(!quantity.value.trim()){
-      quantityErr.textContent = '필수 필드입니다.';
-      if(!quantityErr.classList.contains('fieldError')){
-        quantityErr.classList.add('fieldError');
-      }
-    }else if(isNaN(quantity.value) || quantity.value <= 0){        //수량, 단가는 숫자
-      quantityErr.textContent = '숫자를 입력하세요';
-      if(!quantityErr.classList.contains('fieldError')){
-        quantityErr.classList.add('fieldError');
-      }
-    }else if(quantity.value > 100){
-      quantityErr.textContent = '수량은 100개 초과 안돼';
-      if(!quantityErr.classList.contains('fieldError')){
-        quantityErr.classList.add('fieldError');
-      }
-    }else {
-      quantityErr.textContent= null;
-      quantityErr.classList.remove('fieldError');
-    }
-
-    //가격
-    if(!price.value.trim()){
-      priceErr.textContent = '필수 필드입니다.';
-      if(!priceErr.classList.contains('fieldError')){
-        priceErr.classList.add('fieldError');
-      }
-    }else if(isNaN(price.value) || price.value <= 0){        //수량, 단가는 숫자
-      priceErr.textContent = '숫자를 입력하세요';
-      if(!priceErr.classList.contains('fieldError')){
-        priceErr.classList.add('fieldError');
-      }
-    }else {
-      priceErr.textContent= null;
-      priceErr.classList.remove('fieldError');
-    }
-
-  //총액 1000만원 초과 검증
-  if(quantity.value * price.value>10000000){
-    globalErr.textContent = '총액이 1000만원을 초과할 수 없음';
-    if(!globalErr.classList.contains('fieldError')){
-      globalErr.classList.add('fieldError');
-    }
-  } else {
-      globalErr.textContent= null;
-      globalErr.classList.remove('fieldError');
-  }
-
-
-    //등록 요청
-    const product = {
-      'pname' : pname.value,
-      'quantity' : quantity.value,
-      'price' : price.value
-    };
+    //1) 데이터 검증(유효성 체크)
+    if(!validChk()) return;
+    //2) 입력데이터 가져오기
+    const product = getInputData();
+    //3) 상품등록처리
     add(product);
+    //4) 목록가져오기
+    findAll();
+    //5) 양식 클리어
+    clearForm();
+  });
 
-    //필드 clear
-    pname.value='';
-    quantity.value='';
-    price.value='';
+  //조회 클릭시
+  findBtn.addEventListener('click', e=>{
+    const id = productId.value;
+    findById(id);
   });
 
   //목록 클릭시
@@ -187,6 +173,7 @@
     findAll();
   });
 
+  //등록
   function add(product){
     const url = 'http://localhost:9080/api/products';
 
@@ -213,7 +200,27 @@
         'Accept': 'application/json'
       }
     }).then(res=>res.json())
-      .then(data=>console.log(data))
+      .then(res=>{
+        console.log(res);
+        if(res.header.rtcd == '00'){
+          const {productId, pname, quantity, price}= res.data;
+          form.productId.value = productId;
+          form.pname.value = pname;
+          form.quantity.value = quantity;
+          form.price.value = price;
+          
+          productIdErr.textContent = '';
+        }else {
+          clearForm();
+          const errMsg = `${res.header.rtcd}-${res.header.rtmsg}`;
+          productIdErr.textContent = res.header.rtmsg;
+
+          if(!globalErr.classList.contains('fieldError')){
+            productIdErr.classList.add('fieldError');
+          }
+          throw new Error(errMsg);
+        }
+      })
       .catch(err=>console.log(err));
   }
 
@@ -246,7 +253,6 @@
         .catch(err=>console.log(err));
     }
 
-
   //목록
   function findAll(){
     const url = `http://localhost:9080/api/products`;
@@ -275,16 +281,61 @@
       .catch(err=>console.log(err));
   }
 
+//유효성 체크
+  function validChk(){
 
+    if(!pname.value.trim()){
+      pnameErr.textContent = '필수 필드입니다.';
+      if(!pnameErr.classList.contains('fieldError')){
+        pnameErr.classList.add('fieldError');
+      }
+    } else {
+      pnameErr.textContent= null;
+      pnameErr.classList.remove('fieldError');
+    }
+    //수량
+    if(!quantity.value.trim()){
+      quantityErr.textContent = '필수 필드입니다.';
+      if(!quantityErr.classList.contains('fieldError')){
+        quantityErr.classList.add('fieldError');
+      }
+    }else{
+      quantityErr.textContent= null;
+      quantityErr.classList.remove('fieldError');
+    }
 
+    //가격
+    if(!price.value.trim()){
+      priceErr.textContent = '필수 필드입니다.';
+      if(!priceErr.classList.contains('fieldError')){
+        priceErr.classList.add('fieldError');
+      }
+    }else {
+      priceErr.textContent= null;
+      priceErr.classList.remove('fieldError');
+    }
 
+  //총액 1000만원 초과 검증
+  if(quantity.value * price.value>10000000){
+    globalErr.textContent = '총액이 1000만원을 초과할 수 없음';
+    if(!globalErr.classList.contains('fieldError')){
+      globalErr.classList.add('fieldError');
+    }
+  } else {
+      globalErr.textContent= null;
+      globalErr.classList.remove('fieldError');
+  }
 
+  return true;
+  }
 
-
-
-
-
-
+  //필드 clear
+  function clearForm(){
+    pname.value='';
+    quantity.value='';
+    price.value='';
+  }
     </script>
-  </div></body>
+  </div>
+</body>
 </html>
