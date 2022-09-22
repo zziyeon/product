@@ -152,13 +152,9 @@
 
       //등록 버튼 클릭
       addBtn.addEventListener('click', e => {
-        console.log('클릭됨');
-        //1)
-
-        //2)
         const product = getInputData();
-        //3)
         add(product);
+        clearForm();
       });
 
       //목록 클릭시
@@ -355,8 +351,6 @@
           priceErr.textContent = null;
           priceErr.classList.remove('fieldError');
         }
-
-
       }
 
       function clearForm() {
