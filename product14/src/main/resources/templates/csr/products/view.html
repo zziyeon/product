@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>상품관리-CSR</title>
+  <style>
+    .fieldError {
+      color: red;
+      font-weight: bold;
+      font-size: 0.8em;
+    }
+    
+    button {
+      background-color: pink;
+      border: none;
+      width: 50px;
+      border-radius: 5px;
+    }
+
+    #productIdErr {
+      color: red;
+    }
+
+    .pAdd>div {
+      width: 600px;
+      display: flex;
+    }
+
+    .pAdd>div>label {
+      width: 90px;
+    }
+
+    .head {
+      border-bottom: 3px solid yellowgreen;
+    }
+
+    #productList .wrap .head,
+    #productList .wrap .body {
+      display: grid;
+      grid-template-columns: 80px 130px 80px 130px;
+      grid-auto-rows: 2em;
+    }
+  </style>
+</head>
+
+<body>
+  <h3>상품 관리-CSR</h3>
+  <hr>
+  <!-- 상품등록 -->
+  <div class="pAdd">
+    <div>
+      <label for="pid">상품아이디</label>
+      <input type="text" id="pid">
+      <button type="button" id="findBtn">조회</button>
+      <span id="productIdErr"></span>
+    </div>
+    <div>
+      <label for="pname">상품명</label>
+      <input type="text" id="pname">
+      <span id="pnameErr"></span>
+    </div>
+    <div>
+      <label for="count">수량</label>
+      <input type="text" id="count">
+      <span id="countErr"></span>
+    </div>
+    <div>
+      <label for="price">가격</label>
+      <input type="text" id="price">
+      <span id="priceErr"></span>
+    </div>
+    <div class="btngrp add">
+      <button id="addBtn" type="button">등록</button>
+    </div>
+    <div class="btngrp read">
+      <button type="button" id="toAddBtn">신규</button>
+      <button type="button" id="modifyBtn">수정</button>
+      <button type="button" id="cancelBtn">취소</button>
+      <button type="button" id="delBtn">삭제</button>
+    </div>
+  </div>
+
+  <!--상품목록-->
+  <div id="productList">
+    <h3>상품 목록</h3>
+    <div>
+      <button id="listBtn">목록</button>
+    </div>
+    <hr>
+    <div class="wrap">
+      <div class="head">
+        <div>ID</div>
+        <div>상품명</div>
+        <div>수량</div>
+        <div>가격</div>
+      </div>
+      <div class="body">
+      </div>
+    </div>
+  </div>
+
+    <script>
+      const MODE = Object.freeze({
+        ADD: Symbol('add'),
+        READ: Symbol('read'),
+      });
+
+      //전역변수
+      const form = {
+        pid: document.getElementById('pid'),
+        pname: document.getElementById('pname'),
+        count: document.getElementById('count'),
+        price: document.getElementById('price'),
+        mode: null   //등록-add, 조회-read
+      }
+
+      //등록상태
+      changeMode(MODE.ADD);
+
+      //전체 목록 가져오기
+      findAll();
+
+      //화면 Mode 변경
+      function changeMode(mode) {
+        if (form.mode == mode) return;       //현재모드와 바뀌려는 모드가 같으면 실행x
+        form.mode = mode;
+
+        switch (form.mode) {
+          case MODE.ADD:    //등록
+            //버튼
+            document.querySelector('.add').style.display = 'block';
+            document.querySelector('.read').style.display = 'none';
+            break;
+          case MODE.READ:    //조회
+            //버튼
+            document.querySelector('.add').style.display = 'none';
+            document.querySelector('.read').style.display = 'block';
+            break;
+        }
+      }
+
+      function getInputData() {
+        const pname = form.pname.value;
+        const count = form.count.value;
+        const price = form.price.value;
+
+        return { pname, count, price };
+      };
+
+      //등록 버튼 클릭
+      addBtn.addEventListener('click', e => {
+        console.log('클릭됨');
+        //1)
+
+        //2)
+        const product = getInputData();
+        //3)
+        add(product);
+      });
+
+      //목록 클릭시
+      listBtn.addEventListener('click', e => {
+        findAll();
+      });
+
+      //삭제 클릭시
+      delBtn.addEventListener('click', e => {
+        console.log('삭제버튼 클릭');
+        const pid = form.pid.value;    //상품아이디
+        deleteById(pid);
+        clearForm();
+      });
+
+      //수정 클릭시
+      modifyBtn.addEventListener('click', e => {
+        update(form.pid.value, getInputData());
+      });
+
+      //취소 클릭시
+      cancelBtn.addEventListener('click', e => {
+        const pid = document.getElementById('pid').value;
+        findById(pid);
+        pnameErr.textContent = null;
+        countErr.textContent = null;
+        priceErr.textContent = null;
+        pnameErr.classList.remove('fieldError');
+        countErr.classList.remove('fieldError');
+        priceErr.classList.remove('fieldError');
+      });
+
+      //조회 클릭시
+      findBtn.addEventListener('click', e => {
+        const pid = document.getElementById('pid').value;
+        if (!pid.trim().trim()) {
+          if (!productIdErr.classList.contains('fieldError')) {
+            productIdErr.classList.add('fieldError');
+          }
+          productIdErr.textContent = '조회할 아이디를 입력해주세요.';
+          form.pid.focus();
+          return;
+        } else {
+          productIdErr.textContent = ''
+          productIdErr.classList.remove('fieldError');
+        }
+        findById(pid);
+      });
+
+      //신규 클릭시
+      toAddBtn.addEventListener('click', e => {
+        changeMode(MODE.ADD);
+        clearForm();
+      });
+
+
+      //등록
+      function add(product) {
+        const url = 'http://localhost:9080/api/products';
+
+        fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body:
+            JSON.stringify(product)
+        }).then(res => res.json()).then(data => {
+          console.log(data);
+          findAll();
+        }).catch(err => console.log(err));
+      };
+
+      //조회
+      function findById(pid) {
+        const url = `http://localhost:9080/api/products/${pid}`;
+
+        fetch(url, {                  //url
+          method: 'GET',             //http method
+          headers: {                  //http header
+            'Accept': 'application/json'
+          }
+        }).then(res => res.json())
+          .then(res => {
+            console.log(res);
+            if (res.header.rtcd == '00') {
+              //조회결과 양식에 반영하기
+              fillForm(res.data);
+              productIdErr.textContent = '';
+              //조회 상태
+              changeMode(MODE.READ);
+            } else {
+              clearForm();
+              const errMsg = `${res.header.rtcd}-${res.header.rtmsg}`;
+              productIdErr.textContent = res.header.rtmsg;
+
+              if (!globalErr.classList.contains('fieldError')) {
+                productIdErr.classList.add('fieldError');
+              }
+              throw new Error(errMsg);
+            }
+          })
+          .catch(err => console.log(err));
+      }
+
+      //수정
+      function update(pid, product) {
+        const url = `http://localhost:9080/api/products/${pid}`;
+        fetch(url, {                  //url
+          method: 'PATCH',             //http method
+          headers: {                  //http header
+            'Content-type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify(product)
+        }).then(res => res.json())
+          .then(data => {
+            console.log(data);
+            findAll();
+          })
+          .catch(err => console.log(err));
+      }
+
+      //목록
+      function findAll() {
+        const url = `http://localhost:9080/api/products`;
+
+        fetch(url, {
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json'
+          }
+        }).then(res => res.json())
+          .then(res => {
+            if (res.header.rtcd == '00') {
+              const result = res.data.map(product => {
+                return `<div>${product.pid}</div>
+                                          <div><a href="#" onclick='findById(${product.pid})'>${product.pname}</a></div>
+                                          <div>${product.count}</div>
+                                          <div>${product.price}</div>`;
+              });
+              console.log(result.join());
+              document.querySelector('#productList .wrap .body').innerHTML = result.join('');
+            } else {
+
+            }
+          }).catch(err => console.log(err));
+      }
+
+      //삭제
+      function deleteById(pid) {
+        const url = `http://localhost:9080/api/products/${pid}`;
+        fetch(url, {            //url
+          method: 'DELETE',        //http method
+          headers: {             //http header
+            'Accept': 'application/json'
+          },
+        }).then(res => res.json())
+          .then(data => {
+            console.log(data);
+            findAll();
+          })
+          .catch(err => console.log(err));
+      }
+
+      //데이터 유효성
+      function validChk() {
+        if (!pname.value.trim()) {
+          pnameErr.textContent = '필수 필드입니다.';
+          if (!pnameErr.classList.contains('fieldError')) {
+            pnameErr.classList.add('fieldError');
+          }
+        } else {
+          pnameErr.textContent = null;
+          pnameErr.classList.remove('fieldError');
+        }
+        if(!count.value.trim()){
+          countErr.textContent='필수 필드입니다.';
+          if (!countErr.classList.contains('fieldError')) {
+            countErr.classList.add('fieldError');
+          }
+        } else {
+          countErr.textContent = null;
+          countErr.classList.remove('fieldError');
+        }
+          //가격
+          if (!price.value.trim()) {
+            priceErr.textContent = '필수 필드입니다.';
+          if (!priceErr.classList.contains('fieldError')) {
+            priceErr.classList.add('fieldError');
+          }
+        } else {
+          priceErr.textContent = null;
+          priceErr.classList.remove('fieldError');
+        }
+
+
+      }
+
+      function clearForm() {
+        form.pid.value = '';
+        form.pname.value = '';
+        form.count.value = '';
+        form.price.value = '';
+      }
+
+      function fillForm({ pid, pname, count, price }) {
+        form.pid.value = pid;
+        form.pname.value = pname;
+        form.count.value = count;
+        form.price.value = price;
+      }
+    </script>
+
+</body>
+
+</html>
