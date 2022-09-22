@@ -3,6 +3,7 @@ package com.kh.demo.domain.common.file;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+
 @Data
 public class UploadFile {
   private Long uploadfileId;        //  UPLOADFILE_ID	NUMBER(10,0)

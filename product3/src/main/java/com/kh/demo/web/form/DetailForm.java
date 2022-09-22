@@ -12,6 +12,6 @@ public class DetailForm {
   private Long quantity;                  //  QUANTITY	NUMBER(10,0)
   private Long price;                     //  PRICE	NUMBER(10,0)
 
-  private UploadFile attachFile;          //
-  private List<UploadFile> imageFiles;    //
+  private UploadFile attachFile;
+  private List<UploadFile> imageFiles;
 }

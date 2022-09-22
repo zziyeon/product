@@ -1,8 +1,13 @@
 package com.kh.demo.web.form;
 
+import com.kh.demo.domain.common.file.UploadFile;
 import lombok.Data;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+import java.util.List;
 
 @Data
 public class UpdateForm {
@@ -17,4 +22,7 @@ public class UpdateForm {
   @Positive
   @Max(9999999999L)
   private Long price;       //  PRICE	NUMBER(10,0)
+
+  private UploadFile attachFile;
+  private List<UploadFile> imageFiles;
 }
