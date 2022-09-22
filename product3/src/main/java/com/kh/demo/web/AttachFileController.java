@@ -30,32 +30,34 @@ public class AttachFileController {
   private final UploadFileDAO uploadFileDAO;
 
   //이미지
-//  @ResponseStatus(HttpStatus.OK)
+  //@ResponseStatus(HttpStatus.OK)
   @ResponseBody
   @GetMapping("/img/{attachCode}/{storeFileName}")
   public Resource img(
           @PathVariable String attachCode,
           @PathVariable String storeFileName) throws MalformedURLException {
-    //http://서버:포트/경로...
-    //file:///d:/tmp/P0101/xxx--xxx-xxxx.png
-    Resource resource = new UrlResource("file:///" + attachRoot+"/" +attachCode+"/"+storeFileName);
+    // http://서버:포트/경로...
+    // file:///d:/tmp/P0101/xxx-xxx-xxx-xxx.png
+    Resource resource = new UrlResource("file:///"+attachRoot+"/"+attachCode+"/"+storeFileName);
     return resource;
   }
-
   //다운로드
   @GetMapping("/file/{attachCode}/{fid}")
   public ResponseEntity<Resource> file(
           @PathVariable String attachCode,
-          @PathVariable Long fid )throws MalformedURLException {
+          @PathVariable Long fid) throws MalformedURLException {
     ResponseEntity<Resource> res = null;
 
     Optional<UploadFile> uploadFile = uploadFileDAO.findFileByUploadFileId(fid);
     if(uploadFile.isEmpty()) return res;
 
     UploadFile attachFile = uploadFile.get();
-    String storeFileName = attachFile.getStoreFileName();
-    Resource resource = new UrlResource("file:///"+attachRoot+"/"+attachCode+"/"+storeFileName);
-    String encode = UriUtils.encode(storeFileName, StandardCharsets.UTF_8);
+    log.info("attachFile={}", attachFile);
+    String storeFileName = attachFile.getStoreFilename();
+    String uploadFileName = attachFile.getUploadFilename();
+
+    Resource resource = new UrlResource("file:"+attachRoot+attachCode+"/"+storeFileName);
+    String encode = UriUtils.encode(uploadFileName, StandardCharsets.UTF_8);
 
     String contentDisposition = "attachmemt; filename=\""+encode+"\"";
 
@@ -64,5 +66,4 @@ public class AttachFileController {
             .body(resource);
     return res;
   }
-
 }
