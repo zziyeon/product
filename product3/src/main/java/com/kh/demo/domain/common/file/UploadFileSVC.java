@@ -47,6 +47,4 @@ public interface UploadFileSVC {
 //   * @return 삭제한 레코드수
 //   */
 //  int deleteFileByCodeWithRid(String code, Long rid);
-
-
 }

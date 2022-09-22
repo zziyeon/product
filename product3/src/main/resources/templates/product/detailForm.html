@@ -35,9 +35,15 @@
     <button type="button" id="deleteBtn">삭제</button>
     <button type="button" id="listBtn">목록</button>
   </div>
-  <div><a href="http://localhost:9080/attach/file/P0101/41">상품설명</a></div>
-  <div>
-    <img width="50px" src="http://localhost:9080/attach/img/P0102/4a446ce3-b31c-4f3d-b6e7-402e474bfdb3.png" alt="">
+  <!--상품이 있는경우 랜더링 되어야함-->
+  <div th:if="${form.attachFile}">
+    <a href="http://localhost:9080/attach/file/P0101/41" th:href="@{/attach/file/{attachCode}/{fid}(attachCode=${form.attachFile.code},fid=${form.attachFile.uploadfileId})}"
+    th:text="${form.attachFile.uploadFilename}">상품설명</a>
+  </div>
+  <div th:if="form.imageFiles">
+    <th:block th:each="imageFile:${form.imageFiles}">
+      <img width="200px" src="http://localhost:9080/attach/img/P0102/4a446ce3-b31c-4f3d-b6e7-402e474bfdb3.png" th:src="@{/attach/img/{attachCode}/{storeFilename}(attachCode=${imageFile.code}, storeFilename=${imageFile.storeFilename})}" alt="이미지를 불러올수 없음">
+    </th:block>
   </div>
 </div>
 <script>
