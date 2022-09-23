@@ -21,8 +21,8 @@ import java.util.Optional;
 //@RestController = @Controller + @ResponseBody
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/attach")
-public class AttachFileController {
+@RequestMapping("/api/attach")
+public class ApiAttachFileController {
 
   private final UploadFileSVC uploadFileSVC;
   private final FileUtils fileUtils;
@@ -35,7 +35,7 @@ public class AttachFileController {
           @PathVariable String storeFileName) throws MalformedURLException {
     // http://서버:포트/경로...
     // file:///d:/tmp/P0101/xxx-xxx-xxx-xxx.png
-    String url = "file:///" + fileUtils.getAttachFilePath(AttachCode.valueOf(attachCode), storeFileName);
+    String url = "file:///"+ fileUtils.getAttachFilePath(AttachCode.valueOf(attachCode),storeFileName);
     Resource resource = new UrlResource(url);
     return resource;
   }
@@ -44,7 +44,7 @@ public class AttachFileController {
   //반환 타입이 ResponseEntity<>인경우 응답 메시지 바디에 직접 쓰기 작업시도함 (@ResponseBody 불필요)
   public ResponseEntity<Resource> file(
           @PathVariable String attachCode,
-          @PathVariable Long fid) throws MalformedURLException {
+          @PathVariable Long fid) throws MalformedURLException{
     ResponseEntity<Resource> res = null;
 
     Optional<UploadFile> uploadFile = uploadFileSVC.findFileByUploadFileId(fid);
@@ -55,7 +55,7 @@ public class AttachFileController {
     String storeFileName = attachFile.getStoreFilename();
     String uploadFileName = attachFile.getUploadFilename();
 
-    String url = "file:///" + fileUtils.getAttachFilePath(AttachCode.valueOf(attachCode), storeFileName);
+    String url = "file:///"+ fileUtils.getAttachFilePath(AttachCode.valueOf(attachCode),storeFileName);
     Resource resource = new UrlResource(url);
 
     //다운받은 파일명이 한글일때 깨질까봐 UTF_8 사용
@@ -70,7 +70,7 @@ public class AttachFileController {
   }
 
   //첨부파일 삭제
-  @DeleteMapping("/fid")
+  @DeleteMapping("/{fid}")
   public Object deleteAttachFile(@PathVariable Long fid) {
     // 메타정보 읽어오기
     //1) 스토리지 파일을 삭제하기 위해 첨부분류코드(code)와 저장파일명(storeFilename)을 가져온다.
