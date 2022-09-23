@@ -69,7 +69,7 @@
       <a href="http://localhost:9080/attach/file/P0101/41" th:href="@{/api/attach/file/{attachCode}/{fid}(attachCode=${form.attachFile.code},fid=${form.attachFile.uploadfileId})}"
          th:text="${form.attachFile.uploadFilename}">상품설명</a>
       <!--    th:text="|${form.attachFile.uploadFilename}(${form.attachFile.fsize})(${form.attachFile.ftype})|}"-->
-      <a href="" class="delBtn" th:onclick="|delAttachFile(event, ${form.attachFile.uploadfileId}))|">삭제</a>
+      <a href="" th:data-ftype="attachFile" class="delBtn" th:onclick="|delAttachFile(event,${form.attachFile.uploadfileId})|">삭제</a>
     </div>
   </div>
   <div id="imageFiles" th:if="${form.imageFiles}">
@@ -77,7 +77,7 @@
       <div th:class="|item item${imageFileStat.count}|">
         <img width="200px" src="http://localhost:9080/attach/img/P0102/4a446ce3-b31c-4f3d-b6e7-402e474bfdb3.png" th:src="@{/api/attach/img/{attachCode}/{storeFilename}(attachCode=${imageFile.code},storeFilename=${imageFile.storeFilename})}"
              alt="이미지를 불러올수 없습니다">
-        <a href="" class="delBtn" th:onclick="|delAttachFile(event, ${imageFile.uploadfileId}))|">삭제</a>
+        <a href="" th:data-ftype="imageFiles" class="delBtn" th:onclick="|delAttachFile(event,${imageFile.uploadfileId})|">삭제</a>
       </div>
     </th:block>
   </div>
@@ -115,13 +115,19 @@
       .then(res=>{
         console.log(res);
         if(res.header.rtcd == '00'){
-          const currentEle = event.target;                  // 현재요소  (삭제버튼)
-          const ftype = currEle.dataset.
-          const toDelEle = currEle.closest('.item');        // 삭제할 요소  (첨부)
-          const parentEle = toDelEle.closest('#imageFiles')??toDelEle.closest('#attachFile');     //부모요소
-          parentEle.removeChild(toDelEle);
+           const currEle = event.target;                //현재요소(삭제버튼)
+           const ftype = currEle.dataset.ftype;         //첨부유형
+           const toDelEle = currEle.closest('.item');   //삭제할요소(첨부)
+           let parentEle = "";
+           switch(ftype){
+            case "attachFile" :
+              parentEle = toDelEle.closest('#attachFile');break;
+            case "imageFiles" :
+              parentEle = toDelEle.closest('#imageFiles');break;
+           }
+           parentEle.removeChild(toDelEle);
         }else{
-          throw new Error('삭제 오류');
+          throw new Error('삭제오류');
         }
       }).catch(err=>console.log(err));
   }
