@@ -307,13 +307,11 @@
           }else{
 
           }
-        })
-        .catch(err=>console.log(err));
+        }).catch(err=>console.log(err));
     }
 
 
     function validChk(){
-
       //상품명 필수
       if(!pname.value.trim()){
         pnameErr.textContent = '필수 필드입니다.';
