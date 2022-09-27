@@ -232,6 +232,10 @@
           if(res.header.rtcd == '00'){
             //조회결과 양식에 반영하기
             fillForm(res.data);
+
+            documem~.InnerHtml = res.data.memberId;
+
+
             productIdErr.textContent = '';
             //조회 상태
             changeMode(MODE.READ);
